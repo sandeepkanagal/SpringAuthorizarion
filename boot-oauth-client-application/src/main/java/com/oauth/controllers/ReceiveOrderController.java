@@ -19,17 +19,17 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oauth.model.Employee;
+import com.oauth.model.OrderService;
 
 @Controller
-public class EmployeeController {
+public class ReceiveOrderController {
 
-	@RequestMapping(value = "/getEmployees", method = RequestMethod.GET)
+	@RequestMapping(value = "/getOrderDetails", method = RequestMethod.GET)
 	public ModelAndView getEmployeeInfo() {
-		return new ModelAndView("getEmployees");
+		return new ModelAndView("getOrderDetails");
 	}
-
-	@RequestMapping(value = "/showEmployees", method = RequestMethod.GET)
+	
+	@RequestMapping(value = "/showOrder", method = RequestMethod.GET)
 	public ModelAndView showEmployees(@RequestParam("code") String code) throws JsonProcessingException, IOException {
 		ResponseEntity<String> response = null;
 		System.out.println("Authorization code------" + code);
@@ -48,7 +48,7 @@ public class EmployeeController {
 		String access_token_url = "http://localhost:8080/oauth/token";
 		access_token_url += "?code=" + code;
 		access_token_url += "&grant_type=authorization_code";
-		access_token_url += "&redirect_uri=http://localhost:8090/showEmployees";
+		access_token_url += "&redirect_uri=http://localhost:8090/showOrder";
 
 		response = restTemplate.exchange(access_token_url, HttpMethod.POST, request, String.class);
 
@@ -59,19 +59,20 @@ public class EmployeeController {
 		JsonNode node = mapper.readTree(response.getBody());
 		String token = node.path("access_token").asText();
 
-		String url = "http://localhost:8080/user/getEmployeesList";
-		
+		String url = "http://localhost:8080/user/getOrderList";
+
 		// Use the access token for authentication
 		HttpHeaders headers1 = new HttpHeaders();
 		headers1.add("Authorization", "Bearer " + token);
 		HttpEntity<String> entity = new HttpEntity<>(headers1);
 
-		ResponseEntity<Employee[]> employees = restTemplate.exchange(url, HttpMethod.GET, entity, Employee[].class);
-		System.out.println(employees);
-		Employee[] employeeArray = employees.getBody();
+		ResponseEntity<OrderService[]> orderList = restTemplate.exchange(url, HttpMethod.GET, entity, OrderService[].class);
+		System.out.println(orderList);
+		OrderService[] orderArray = orderList.getBody();
 
-		ModelAndView model = new ModelAndView("showEmployees");
-		model.addObject("employees", Arrays.asList(employeeArray));
+		ModelAndView model = new ModelAndView("showOrder");
+		model.addObject("orderList", Arrays.asList(orderArray));
 		return model;
 	}
+	
 }

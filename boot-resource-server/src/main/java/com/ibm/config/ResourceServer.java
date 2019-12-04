@@ -8,10 +8,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 @Configuration
 @EnableResourceServer
 class ResourceServer extends ResourceServerConfigurerAdapter {
-    //Here we specify to allow the request to the url /user/getEmployeesList with valid access token and scope read 
+    //Here we specify to allow the request to the url /user/getOrderList with valid access token and scope read 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.requestMatchers().antMatchers("/user/getEmployeesList/**").and().authorizeRequests().anyRequest()
+		http.requestMatchers().antMatchers("/user/getOrderList/**").and().authorizeRequests().anyRequest()
 				.access("#oauth2.hasScope('read')");
 	}
 }
