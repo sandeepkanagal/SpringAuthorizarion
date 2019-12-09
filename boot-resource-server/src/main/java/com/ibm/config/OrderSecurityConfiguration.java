@@ -1,5 +1,6 @@
 package com.ibm.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,6 +11,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 public class OrderSecurityConfiguration extends WebSecurityConfigurerAdapter {
+	
+	@Value("${user.security.role}")
+    private String userSecurityRole;
+
+	@Value("${user.security.authorities}")
+    private String userSecurityAuth;
+	
+	@Value("${user.security.user}")
+    private String userName;
+	
+	@Value("${user.security.pwd}")
+    private String userPwd;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -19,7 +32,7 @@ public class OrderSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/user/getOrderList")
-            .hasAnyRole("ADMIN").anyRequest().authenticated().and().formLogin()
+            .hasAnyRole(this.userSecurityRole).anyRequest().authenticated().and().formLogin()
             .permitAll().and().logout().permitAll();
 
         http.csrf().disable();
@@ -27,7 +40,7 @@ public class OrderSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationMgr) throws Exception {
-        authenticationMgr.inMemoryAuthentication().withUser("admin").password("admin")
-            .authorities("ROLE_ADMIN");
+        authenticationMgr.inMemoryAuthentication().withUser(this.userName).password(this.userPwd)
+            .authorities(this.userSecurityAuth);
     }
 }

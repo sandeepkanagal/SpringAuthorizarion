@@ -21,7 +21,6 @@ public class ReceiveOrderController {
 		
 		List<OrderService> orderList= orderRepository.findAll();
 		System.out.println("orderList size ="+orderList.size());
-		orderList = (orderList.size()) == 0 ? getSampleOrderList():orderList;
 		return orderList;
 	}
 	

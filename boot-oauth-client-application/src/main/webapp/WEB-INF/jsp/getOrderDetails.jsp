@@ -7,9 +7,9 @@
 <body>
 	<h3 style="color: red;">Authorization Info</h3>
 
-	<div id="addEmployee">
+	<div id="clientCredentials">
 		<form:form action="http://localhost:8080/oauth/authorize"
-			method="post" modelAttribute="emp">
+			method="post" modelAttribute="orderservice">
 			<p>
 				 Code <input type="text" name="response_type" value="code" /> 
 				 Client_id <input type="text" name="client_id" value="clientapp" />
